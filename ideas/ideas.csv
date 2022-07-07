@@ -1,0 +1,7 @@
+Idea,Desc,Priority,Tag1,Tag2,Request-Type
+Blackjack Bot,Playable Version of BlackJack with accurate rules and gambling system,Low,Fun,RNG,Submitted
+Template Generator,Generates Python Enviroments with file templates,Medium,Practical,System,Self-Request
+Quote,Pulls quotes from personal quote DB,Low,RNG,System,Self-Request
+Test, This row will have RNG in Tag1 and not Tag2,Low,RNG,Test,Self-Request
+Test2, This row will have RNG in Tag2 and not Tag1,Low,Test,RNG,Self-Request
+Test3, This row will have RNG in both,Low,RNG,RNG,Self-Request
