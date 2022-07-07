@@ -4,7 +4,7 @@
 
 Aims:
     
-    Play Blackjack
+    Play BlacCkjack
     Add bet
     Calculate Winnings
     Store Balance
