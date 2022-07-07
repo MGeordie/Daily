@@ -1,6 +1,6 @@
 """
 
-7th July 2022 - Ideas
+7th July 2022 - Blackjack
 
 Aims:
     
