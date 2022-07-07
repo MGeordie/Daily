@@ -97,3 +97,18 @@
 05/07/2022 04:30:42 PM ----------Ending Session----------
 05/07/2022 04:33:16 PM ----------Starting Session----------
 05/07/2022 04:33:27 PM ----------Ending Session----------
+07/07/2022 02:48:47 PM ----------Starting Session----------
+07/07/2022 02:49:25 PM ---BuyIn Started---
+07/07/2022 02:49:27 PM 25 attempted to buy-in with their name but has not created a user.
+07/07/2022 02:49:27 PM ---BuyIn Ended---
+07/07/2022 02:49:31 PM ---BuyIn Started---
+07/07/2022 02:49:40 PM Colleen has attempted to buy-in with 25
+07/07/2022 02:49:40 PM 25.00 has been added to Colleen balance. Their balance is now 25.00
+07/07/2022 02:49:40 PM ---BuyIn Ended---
+07/07/2022 02:50:03 PM ---Withdraw Started---
+07/07/2022 02:50:09 PM Geordie has attempted to withdraw $10.00 from their balance of $25.00
+07/07/2022 02:50:09 PM Valid Withdrawal, begining process
+07/07/2022 02:50:09 PM Withdrawal Successful. Geordie has withdrawn $10.00 and their new balance is $15.00
+07/07/2022 02:50:09 PM ---Withdraw Ended---
+07/07/2022 02:50:19 PM ----------Ending Session----------
+07/07/2022 02:57:09 PM ----------Starting Session----------
