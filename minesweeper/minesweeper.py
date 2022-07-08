@@ -72,15 +72,22 @@ def genMines(difficulty):
         print("Problem with difficulty...")
     return mineField
 
-def checkMine(x,y):
-    print("Checking")
+def checkMine(test,x,y):
+    if mineField.loc[x,y] == "Mine":
+        print("Boom")
+    elif mineField.loc[x,y] =="Safe":
+        print("Safe")
+        test = "X"
+    else:
+        print("Something wrong in checkMine")
 
 
 def genGame(mineField):
     window = tk.Tk()
+    test= "O"
     for x in mineField:
         for y in mineField:
-            tk.Button(text=(x,",",y), command = checkMine(x,y)).grid(row=x,column=y,sticky="ew")
+            tk.Button(textvariable=test, command = lambda row=x ,column=y: checkMine(test,row,column)).grid(row=x,column=y,sticky="ew")
     window.mainloop()
 
 difficulty = input("What difficulty would you like?")
