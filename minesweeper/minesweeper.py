@@ -36,14 +36,23 @@ Notes:
 """
 
 #Imports
+from curses import window
 import tkinter as tk
 import pandas as pd
 import random
+from array import *
 
 #Variables
 mineField = pd.DataFrame()
+checkedMine = pd.DataFrame({
+    'Row' : [],
+    'Column' : [],
+    'Value' : [],
+    'MineCount' : []
+})
 buttonDict = {}
 mineClose = 0
+play = True
 # mineCount = 0
 
 def genMines(difficulty):
@@ -60,8 +69,26 @@ def genMines(difficulty):
                     mineField.at[i,y] = "Mine"
     elif difficulty == "Medium":
         print("Medium mines being generated...")
+        for i in range(0,10):
+            for y in range(0,10):
+                mineRand = random.randint(0,10)
+                if mineRand > 2:
+                    print("Made it to safe at",i,y)
+                    mineField.at[i,y] = "Safe"
+                else:
+                    print("Made it to Mine at",i,y)
+                    mineField.at[i,y] = "Mine"
     elif difficulty =="Hard":
         print("Hard mines being generated...")
+        for i in range(0,20):
+            for y in range(0,20):
+                mineRand = random.randint(0,10)
+                if mineRand > 2:
+                    print("Made it to safe at",i,y)
+                    mineField.at[i,y] = "Safe"
+                else:
+                    print("Made it to Mine at",i,y)
+                    mineField.at[i,y] = "Mine"
     else:
         print("Problem with difficulty...")
     return mineField
@@ -73,39 +100,51 @@ def checkMine(q,x,y):
         buttonDict[q].config(state="disabled")
     elif mineField.loc[x,y] =="Safe":
         print("Safe")
-        mineClose = checkSurround(q,x,y)
+        mineClose = checkSurround(x,y)
+        if mineClose == 0:
+            for x in checkedMine.index:
+                if checkedMine.loc[x,'Value'] == "Safe":
+                    tempClose = checkSurround(checkedMine.loc[x,'Row'],checkedMine.loc[x,'Column'])
+                    print("TESTING,", tempClose)
+                    checkedMine.loc[x,'MineCount'] = tempClose
+        print(checkedMine)
         buttonDict[q].config(text = mineClose)
         buttonDict[q].config(state="disabled")
     else:
         print("Something wrong in checkMine")
 
-def checkSurround(q,x,y):
+#Detects the surrounding 8 squares and checks for mines.
+#If a mine is detected, add 1 to the mineClose counter and return the number to be printed on the selected spot.
+def checkSurround(x,y):
+
+    #Defines the Search Limits
     minRowRange = 0
     maxRowRange = 3
     minColRange = 0
     maxColRange = 3
+
+    #Mine Counter
     mineClose = 0
 
-    print(x,y)
-    print(len(mineField))
-    print(len(mineField.columns))
-
+    #Sets the pointer to start at the top left square to selected
     row = x-1
     col = y-1
-    #Check Border
+
+    #Check if at an edge. If so reduce, the search limit so it doesn't try searching outside of the mineField array.
     if x-1 < 0:
         minRowRange = 1
         print("At the top")
     if y-1 < 0:
         minColRange = 1
         print("At the left edge")
-    if x+1 > len(mineField) - 1:
+    if x+1 > len(mineField)-1:
         maxRowRange = 2
         print("At the bottom")
-    if y+1 > len(mineField.columns) -1:
+    if y+1 > len(mineField.columns)-1:
         maxColRange = 2
         print("At the right edge")
 
+    #Loop through search parameters via reading top left to bottom right.
     for i in range(minRowRange,maxRowRange):
         row = x - 1
         row = row + i
@@ -114,11 +153,13 @@ def checkSurround(q,x,y):
             col = col + a
             if mineField.loc[row,col] == "Mine":
                 mineClose = mineClose + 1
+                checkedMine.loc[len(checkedMine.index)] = [row,col,"Mine",0]
+            else:
+                checkedMine.loc[len(checkedMine.index)] = [row,col,"Safe",0]
             col = y-1
     return mineClose
 
-
-
+#Generate Game Window
 def genGame(mineField):
     window = tk.Tk()
     window.geometry("800x1000")
@@ -136,6 +177,11 @@ def genGame(mineField):
     window.mainloop()
 
 difficulty = input("What difficulty would you like?")
-genMines(difficulty)
-print(mineField)
-genGame(mineField)
+
+
+while play == True:
+    play = True
+    genMines(difficulty)
+    print(mineField)
+    genGame(mineField)
+    break
