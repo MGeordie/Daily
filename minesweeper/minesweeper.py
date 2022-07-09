@@ -1,6 +1,6 @@
 """
 
-8th July 2022 - Minesweeper
+8th - 9th July 2022 - Minesweeper
 
 Aims:
     
@@ -72,7 +72,7 @@ def genMines(difficulty):
         for i in range(0,10):
             for y in range(0,10):
                 mineRand = random.randint(0,10)
-                if mineRand > 2:
+                if mineRand > 1:
                     print("Made it to safe at",i,y)
                     mineField.at[i,y] = "Safe"
                 else:
@@ -83,7 +83,18 @@ def genMines(difficulty):
         for i in range(0,20):
             for y in range(0,20):
                 mineRand = random.randint(0,10)
-                if mineRand > 2:
+                if mineRand > 1:
+                    print("Made it to safe at",i,y)
+                    mineField.at[i,y] = "Safe"
+                else:
+                    print("Made it to Mine at",i,y)
+                    mineField.at[i,y] = "Mine"
+    elif difficulty == "Test":
+        print("Easy mines being generated...")
+        for i in range(0,5):
+            for y in range(0,5):
+                mineRand = random.randint(0,10)
+                if mineRand > 1:
                     print("Made it to safe at",i,y)
                     mineField.at[i,y] = "Safe"
                 else:
@@ -102,12 +113,7 @@ def checkMine(q,x,y):
         print("Safe")
         mineClose = checkSurround(x,y)
         if mineClose == 0:
-            for x in checkedMine.index:
-                if checkedMine.loc[x,'Value'] == "Safe":
-                    tempClose = checkSurround(checkedMine.loc[x,'Row'],checkedMine.loc[x,'Column'])
-                    print("TESTING,", tempClose)
-                    checkedMine.loc[x,'MineCount'] = tempClose
-        print(checkedMine)
+            check8(checkedMine,q)
         buttonDict[q].config(text = mineClose)
         buttonDict[q].config(state="disabled")
     else:
@@ -158,6 +164,69 @@ def checkSurround(x,y):
                 checkedMine.loc[len(checkedMine.index)] = [row,col,"Safe",0]
             col = y-1
     return mineClose
+
+def check8(array,q):
+        for b in array.index:
+            if array.loc[b,'Value'] == "Safe":
+
+                minRowRange = 0
+                maxRowRange = 3
+                minColRange = 0
+                maxColRange = 3
+
+                if len(mineField) == 5:
+                    jumps = [-6,-5,-4,-1,0,1,4,5,6]
+                elif len(mineField) == 10:
+                    jumps = [-11,-1,9]
+                elif len(mineField) == 20:
+                    jumps = [-21,-1,19]
+
+                #Set x and y
+                x = array.loc[b,'Row']
+                y = array.loc[b,'Column']
+                print("Checking tile:", x,",",y)
+
+                #Mine Counter
+                mineClose = 0
+
+                #Sets the pointer to start at the top left square to selected
+                row = x-1
+                col = y-1
+
+                #Check if at an edge. If so reduce, the search limit so it doesn't try searching outside of the mineField array.
+                if x-1 < 0:
+                    minRowRange = 1
+                    print("At the top")
+                if y-1 < 0:
+                    minColRange = 1
+                    print("At the left edge")
+                if x+1 > len(mineField)-1:
+                    maxRowRange = 2
+                    print("At the bottom")
+                if y+1 > len(mineField.columns)-1:
+                    maxColRange = 2
+                    print("At the right edge")
+
+                #Loop through search parameters via reading top left to bottom right.
+                for i in range(minRowRange,maxRowRange):
+                    row = x - 1
+                    row = row + i
+                    col = y-1
+                    for a in range(minColRange,maxColRange):
+                        col = col + a
+                        if mineField.loc[row,col] == "Mine":
+                            mineClose = mineClose + 1
+                            array.loc[b,'MineCount'] = mineClose
+                        else:
+                            array.loc[b,'MineCount'] = mineClose
+                        col = y-1
+            print("mines found:", mineClose)
+            print("Updating")
+            pos = jumps[b]
+            buttonDict[q+pos].config(text = mineClose)
+            buttonDict[q+pos].config(state="disabled")
+                        
+        array = array.drop(array.index, inplace=True)
 
 #Generate Game Window
 def genGame(mineField):
