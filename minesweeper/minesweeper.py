@@ -36,7 +36,6 @@ Notes:
 """
 
 #Imports
-from curses import window
 import tkinter as tk
 import pandas as pd
 import random
@@ -166,9 +165,18 @@ def checkSurround(x,y):
     return mineClose
 
 def check8(array,q):
+
+        #Array for boundaries
+        print("CheckedMine Array")
+        print(array)
+        wallCheck = [0,1,2,3,4,5,6,7,8]
+
         for b in array.index:
+            
             if array.loc[b,'Value'] == "Safe":
 
+                #Array for boundaries
+                wallCheck = [0,1,2,3,4,5,6,7,8]
                 minRowRange = 0
                 maxRowRange = 3
                 minColRange = 0
@@ -177,9 +185,9 @@ def check8(array,q):
                 if len(mineField) == 5:
                     jumps = [-6,-5,-4,-1,0,1,4,5,6]
                 elif len(mineField) == 10:
-                    jumps = [-11,-1,9]
+                    jumps = [-11,-10,-9,-1,0,1,9,10,11]
                 elif len(mineField) == 20:
-                    jumps = [-21,-1,19]
+                    jumps = [-21,-20,-19,-1,0,1,19,20,21]
 
                 #Set x and y
                 x = array.loc[b,'Row']
@@ -195,17 +203,33 @@ def check8(array,q):
 
                 #Check if at an edge. If so reduce, the search limit so it doesn't try searching outside of the mineField array.
                 if x-1 < 0:
-                    minRowRange = 1
                     print("At the top")
+                    minRowRange = 1
+                    wallCheck.remove(0)
+                    wallCheck.remove(1)
+                    wallCheck.remove(2)
                 if y-1 < 0:
-                    minColRange = 1
                     print("At the left edge")
-                if x+1 > len(mineField)-1:
-                    maxRowRange = 2
+                    minColRange = 1
+                    wallCheck.remove(0)
+                    wallCheck.remove(4)
+                    wallCheck.remove(6)
+                if x > len(mineField):
                     print("At the bottom")
-                if y+1 > len(mineField.columns)-1:
-                    maxColRange = 2
+                    maxRowRange = 2
+                    wallCheck.remove(6)
+                    wallCheck.remove(7)
+                    wallCheck.remove(8)
+                if y > len(mineField.columns):
                     print("At the right edge")
+                    maxColRange = 2
+                    wallCheck.remove(2)
+                    wallCheck.remove(5)
+                    wallCheck.remove(8)
+                    
+
+                print("#########")
+                print(wallCheck)
 
                 #Loop through search parameters via reading top left to bottom right.
                 for i in range(minRowRange,maxRowRange):
@@ -222,9 +246,16 @@ def check8(array,q):
                         col = y-1
             print("mines found:", mineClose)
             print("Updating")
-            pos = jumps[b]
-            buttonDict[q+pos].config(text = mineClose)
-            buttonDict[q+pos].config(state="disabled")
+            spot = wallCheck[b]
+            print(wallCheck)
+            print(spot)
+            pos = jumps[spot]
+            print("Testing",q+pos)
+            if (q+pos <= len(buttonDict)):
+                buttonDict[q+pos].config(text = mineClose)
+                buttonDict[q+pos].config(state="disabled")
+            else:
+                print("You past the last tile ye",b)
                         
         array = array.drop(array.index, inplace=True)
 
